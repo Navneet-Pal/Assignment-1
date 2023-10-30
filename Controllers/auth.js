@@ -1,6 +1,7 @@
 const User = require("../Models/user")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
+const Token = require("../Models/token")
 require("dotenv").config();
 
 exports.signUp = async(req,res) =>{
@@ -28,6 +29,8 @@ exports.signUp = async(req,res) =>{
             email:email,
         }
         let token = jwt.sign( payload , process.env.JWT_Secret,{expiresIn:"12h"});
+
+        await Token.create({email,token});
 
         const response = await User.create({username,email,password:encrypyPass});
         res.status(200).json({
@@ -75,6 +78,8 @@ exports.login = async (req,res)=>{
             id:user._id
         }
         let token = jwt.sign( payload , process.env.JWT_Secret,{expiresIn:"12h"});
+
+        await Token.create({email,token});
 
         res.status(200).json({
             status:true,
