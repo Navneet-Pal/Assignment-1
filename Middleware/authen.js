@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const User = require("../Models/user")
 
 exports.authen = async(req,res,next)=>{
     try {
@@ -37,15 +38,23 @@ exports.authen = async(req,res,next)=>{
 
 exports.havePermit= async(req,res,next)=>{
     try {
-         const {email} = req.user;
-         if(email !== "navneet1@gmail.com"){
+         const {email} = req.body;
+         const existUser = await User.findOne({email});
+         if(!existUser){
+            return res.json({
+                success:false,
+                message:"user not exist",
+            })
+         }
+         
+         if(email !== "1234@gmail.com"){
              return res.status(401).json({
                  success:false,
-                 message:'This is a protected route for navneet1@gmail.com only',
+                 message:'This is a protected route for 1234@gmail.com only',
              });
          }
          return res.json({
-            message:"you have access to this route"
+            message:"you have access to this route" 
          })
          
     } 

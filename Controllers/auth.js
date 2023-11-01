@@ -33,10 +33,13 @@ exports.signUp = async(req,res) =>{
         await Token.create({email,token});
 
         const response = await User.create({username,email,password:encrypyPass});
+        response.userID = response._id;
+        await response.save();
         res.status(200).json({
             status:true,
             message:"user signed up successfully",
-            token:token
+            token:token,
+            data:response
         })
     } 
     catch (error) {
